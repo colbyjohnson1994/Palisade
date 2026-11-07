@@ -38,6 +38,19 @@ If you edit the starter lists or the YouTube cleaner:
 node build-rules.mjs
 ```
 
+## Release package
+
+GitHub builds the zip for you. Push to `main`, open the **Actions** tab, and download the `Palisade-<version>` artifact from the latest run. That zip is the folder you load unpacked. It leaves out the tests, `CODE.md`, `build-rules.mjs`, and `youtube-boot.js`.
+
+To publish it as a Release, bump `"version"` in `manifest.json`, push, then tag that same version:
+
+```sh
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+The tag must match the manifest. `v0.2.0` is correct only while `manifest.json` says `0.2.0`.
+
 ## Read the code
 
 [CODE.md](CODE.md) is the map. The YouTube path is `lib/youtube.js` (the rules) and `youtube-boot.js` (the page hooks). `youtube.js` is the generated file Edge actually runs.

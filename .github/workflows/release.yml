@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Rebuild generated files
+        run: node build-rules.mjs
+
+      - name: Test
+        run: node --test lib/filters.test.js lib/youtube.test.js
+
+      - name: Pack the release
+        run: |
+          version="$(node -p "require('./manifest.json').version")"
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME#v}" != "$version" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match manifest version ${version}."
+            echo "Bump manifest.json, commit, then tag v${version}."
+            exit 1
+          fi
+          zip -r "Palisade-${version}.zip" \
+            manifest.json \
+            background.js \
+            content.js \
+            page-hook.js \
+            youtube.js \
+            cosmetic-data.js \
+            popup.html \
+            popup.js \
+            options.html \
+            options.js \
+            ui.css \
+            README.md \
+            lib/filters.js \
+            lib/storage.js \
+            lib/youtube.js \
+            icons \
+            rules
+          echo "version=${version}" >> "$GITHUB_ENV"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Palisade-${{ env.version }}
+          path: Palisade-*.zip
+          if-no-files-found: error
+
+      - name: Attach the zip to the GitHub Release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notes="Unzip Palisade-${version}.zip and load the folder that contains manifest.json."
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "Palisade-${version}.zip" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "Palisade-${version}.zip" \
+              --title "Palisade ${version}" \
+              --notes "$notes"
+          fi
