@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Palisade</title>
+    <link rel="stylesheet" href="ui.css" />
+  </head>
+  <body class="popup">
+    <header>
+      <div>
+        <strong>Palisade</strong>
+        <p class="domain" id="domain">This page</p>
+      </div>
+      <button class="link" id="open-options" type="button" style="color:#e4c48a">Settings</button>
+    </header>
+    <main>
+      <div class="row">
+        <div>
+          <strong id="status">Blocking on this site</strong>
+          <p class="muted" id="memory">Using default lists</p>
+        </div>
+        <button class="switch" id="site-switch" type="button" role="switch" aria-checked="true" aria-label="Blocking on this site"><i></i></button>
+      </div>
+      <p class="count" id="count">0</p>
+      <p class="muted">stopped on this page</p>
+      <div class="actions">
+        <button class="primary" id="pick" type="button">Block element</button>
+        <button class="ghost" id="reload" type="button">Reload page</button>
+      </div>
+      <div id="categories"></div>
+      <p class="muted" id="note"></p>
+    </main>
+    <footer>
+      <button class="link" id="pause" type="button">Pause everywhere</button>
+      <button class="link" id="close" type="button">Close</button>
+    </footer>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
