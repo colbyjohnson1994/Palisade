@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Palisade",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Blocks YouTube video ads, and remembers what you allow on each site.",
   "minimum_chrome_version": "111",
   "permissions": [
@@ -40,13 +40,6 @@
     {
       "matches": ["*://*.youtube.com/*", "*://youtube.com/*", "*://*.youtube-nocookie.com/*", "*://youtube-nocookie.com/*", "*://*.youtubekids.com/*", "*://youtubekids.com/*"],
       "js": ["youtube.js"],
-      "run_at": "document_start",
-      "all_frames": true,
-      "world": "MAIN"
-    },
-    {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["page-hook.js"],
       "run_at": "document_start",
       "all_frames": true,
       "world": "MAIN"

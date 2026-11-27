@@ -60,7 +60,6 @@ function renderGeneral(state) {
     ["blockYoutube", "Block YouTube video ads", "Strips ad breaks out of the player, then skips any ad that still starts. Allow youtube.com, or turn this off, if you want the ads."],
     ["enabled", "Block everywhere", "Master switch. Turn this off to pause Palisade without forgetting sites."],
     ["showBadge", "Show the blocked count on the icon", "The number is for the current page."],
-    ["blockPopups", "Block pop-up windows", "Stops window.open while a site is being filtered. Browser-level pop-ups are separate."],
     ["showContextMenu", "Show Block element in the page menu", "Right-click a page and choose Block element with Palisade."],
   ];
   for (const [key, label, hint] of settings) {

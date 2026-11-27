@@ -1,10 +1,10 @@
-# Palisade 0.2.0
+# Palisade 0.2.1
 
 Source tree for Palisade, a Manifest V3 blocker for Microsoft Edge and Chrome. The main feature is YouTube video ads. `manifest.json` is at the root of this repository. Load this folder unpacked.
 
 Palisade removes ad breaks from the player response before the video starts, hides the ad slots on the home and search pages, and skips any ad that still begins. Playback stays on `googlevideo.com`. Blocking that host would stop the video itself.
 
-Palisade is not Adblock Plus and it does not ship EasyList. It also has a toolbar switch, per-site memory, a short starter list, your own filters, element blocking, a pop-up block, and stats.
+Palisade is not Adblock Plus and it does not ship EasyList. It also has a toolbar switch, per-site memory, a short starter list, your own filters, element blocking, and stats.
 
 ## Install on Edge
 
@@ -45,11 +45,11 @@ GitHub builds the zip for you. Push to `main`, open the **Actions** tab, and dow
 To publish it as a Release, bump `"version"` in `manifest.json`, push, then tag that same version:
 
 ```sh
-git tag v0.2.0
-git push origin v0.2.0
+git tag v0.2.1
+git push origin v0.2.1
 ```
 
-The tag must match the manifest. `v0.2.0` is correct only while `manifest.json` says `0.2.0`.
+The tag must match the manifest. `v0.2.1` is correct only while `manifest.json` says `0.2.1`.
 
 ## Read the code
 

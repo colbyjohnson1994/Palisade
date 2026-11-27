@@ -170,10 +170,6 @@ async function handle(message, sender) {
     await recordBlock(sender.tab.id, "youtube");
     return { ok: true };
   }
-  if (message?.type === "popup-blocked" && sender.tab?.id != null) {
-    await recordBlock(sender.tab.id, "popups");
-    return { ok: true };
-  }
   if (message?.type === "visit" && sender.tab?.id != null && sender.frameId === 0) {
     const host = hostFromUrl(sender.tab.url || "");
     if (!host) return { ok: false };

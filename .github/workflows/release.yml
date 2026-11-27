@@ -37,7 +37,6 @@ jobs:
             manifest.json \
             background.js \
             content.js \
-            page-hook.js \
             youtube.js \
             cosmetic-data.js \
             popup.html \

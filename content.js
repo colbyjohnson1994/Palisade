@@ -5,8 +5,8 @@
  * you saved with Block element. Network blocks are not done here; the
  * service worker handles those with declarativeNetRequest.
  *
- * page-hook.js runs in the page world (see the manifest) and blocks
- * window.open when this script tells it to.
+ * youtube.js runs in the page world on YouTube (see the manifest). This
+ * script tells it whether video-ad blocking is on.
  */
 
 const STYLE_ID = "palisade-cosmetic";
@@ -27,9 +27,6 @@ async function init() {
   });
   window.addEventListener("message", (event) => {
     if (event.source !== window) return;
-    if (event.data?.source === "palisade" && event.data.type === "popup-blocked") {
-      chrome.runtime.sendMessage({ type: "popup-blocked" }).catch(() => {});
-    }
     if (event.data?.source === "palisade" && event.data.type === "youtube-blocked") {
       chrome.runtime.sendMessage({ type: "youtube-blocked" }).catch(() => {});
     }
@@ -60,17 +57,13 @@ function apply(state) {
     style.textContent = next;
     if (!style.parentNode) (document.documentElement || document.head).appendChild(style);
   }
-  const site = (state.sites || {})[host];
-  const blocking = state.settings?.enabled !== false && site?.mode !== "allow";
-  const blockPopups = blocking && state.settings?.blockPopups !== false;
-  window.postMessage({ source: "palisade", type: "popups", block: blockPopups }, "*");
   window.postMessage({ source: "palisade", type: "youtube", block: youtubeOn(normalize(state), host) }, "*");
   scheduleReport();
 }
 
 function normalize(state) {
   return {
-    settings: state.settings || { enabled: true, blockPopups: true, blockYoutube: true },
+    settings: state.settings || { enabled: true, blockYoutube: true },
     lists: state.lists || { ads: true, privacy: true, social: true, annoyance: true, malware: true },
     customRules: state.customRules || "",
     sites: state.sites || {},
