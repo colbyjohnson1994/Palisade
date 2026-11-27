@@ -1,6 +1,6 @@
-# Palisade 0.2.0 — code guide
+# Palisade 0.2.1 — code guide
 
-This release's main feature is YouTube video ads. The rest of the extension is the 0.1.0 blocker: starter lists, per-site memory, custom filters, element blocking, pop-ups, and stats.
+This release's main feature is YouTube video ads. The rest of the extension is the 0.1.0 blocker: starter lists, per-site memory, custom filters, element blocking, and stats.
 
 Palisade is an original blocker. It is not affiliated with Adblock Plus or YouTube, and the starter lists are not copies of EasyList.
 
@@ -38,7 +38,6 @@ What this will not do: it will not block an ad that YouTube has already stitched
 - Remembers, per site, "allow everything" and per-list on/off overrides.
 - Remembers element hides from Block element.
 - Accepts a small custom-filter syntax.
-- Blocks `window.open` pop-ups while a site is being filtered.
 - Counts blocks and visits on this browser.
 - Exports and imports a JSON backup.
 
@@ -46,7 +45,7 @@ What this will not do: it will not block an ad that YouTube has already stitched
 
 - It does not subscribe to remote filter lists. Unknown custom-filter lines are reported and skipped.
 - It does not block WebRTC or run an "acceptable ads" program.
-- Network hit counts for the starter lists use `declarativeNetRequest.onRuleMatchedDebug`. That event only fires for an unpacked extension. YouTube, element hides, and pop-up blocks are counted in every install.
+- Network hit counts for the starter lists use `declarativeNetRequest.onRuleMatchedDebug`. That event only fires for an unpacked extension. YouTube and element hides are counted in every install.
 - A category override blocks or allows the starter domains for that site. It does not rewrite your custom filters. "Allow everything" on a site does outrank custom blocks, and it also turns YouTube cleaning off.
 - Single-page URL changes do not count as a new visit. A visit is one document load in the top frame.
 - Cosmetic rules can flash for a moment. That is a Manifest V3 limit. The YouTube hook does not wait on storage.
@@ -67,14 +66,13 @@ What this will not do: it will not block an ad that YouTube has already stitched
 | `build-rules.mjs` | Writes `rules/*.json`, `cosmetic-data.js`, and `youtube.js` |
 | `rules/*.json` | Static `declarativeNetRequest` rules. Generated |
 | `cosmetic-data.js` | Generated selector groups for the content script |
-| `content.js` | Hides elements, tells the page hooks whether pop-ups and YouTube are on |
-| `page-hook.js` | Page-world script. Wraps `window.open` |
+| `content.js` | Hides elements, tells the YouTube page script whether video ads are on |
 | `popup.html`, `popup.js` | Toolbar popup. On YouTube the first switch is video ads |
 | `options.html`, `options.js` | Full settings tab |
 | `ui.css` | Shared popup and settings styles |
 | `icons/` | Toolbar icons |
 
-`background.js`, `popup.js`, and `options.js` are ES modules. `content.js`, `page-hook.js`, and `youtube.js` are classic scripts. The YouTube script has to be classic and synchronous: the player reads `ytInitialPlayerResponse` during HTML parse, before any async import can finish.
+`background.js`, `popup.js`, and `options.js` are ES modules. `content.js` and `youtube.js` are classic scripts. The YouTube script has to be classic and synchronous: the player reads `ytInitialPlayerResponse` during HTML parse, before any async import can finish.
 
 ## How a YouTube watch page is handled
 
@@ -98,7 +96,6 @@ Everything persistent is one `chrome.storage.local` object.
   settings: {
     enabled: true,
     showBadge: true,
-    blockPopups: true,
     showContextMenu: true,
     blockYoutube: true       // default for every YouTube host
   },
@@ -116,7 +113,7 @@ Everything persistent is one `chrome.storage.local` object.
   stats: {
     allTime: 0,
     byDay: { "2026-11-07": 12 },
-    byCategory: { youtube: 4, ads: 9, cosmetic: 2, popups: 1 },
+    byCategory: { youtube: 4, ads: 9, cosmetic: 2 },
     byHost: { "youtube.com": { visits: 3, blocked: 4, lastVisit: 1730950000000 } }
   }
 }
@@ -132,7 +129,6 @@ The per-tab badge count is `chrome.storage.session` under `tab:<id>`. It is not 
 | `youtube-blocked` | page → content script → worker | Count one video-ad block |
 | `visit` | content script → worker | `stats.byHost[host].visits` |
 | `cosmetic-blocked` | content script → worker | Badge and `stats`, category `cosmetic` |
-| `popup-blocked` | page hook → content script → worker | Badge and `stats`, category `popups` |
 | `add-cosmetic` | content script → worker | Appends to `sites[host].cosmetic` |
 | `pick` | popup → content script | Start Block element |
 
